@@ -31,6 +31,7 @@ RUN apt-get update \
         'xdebug.trace_options=0' \
         'xdebug.trace_output_name=trace.%t.%u' \
         'xdebug.log_level=0' \
+        'xdebug.use_compression=false' \
     > /usr/local/etc/php/conf.d/99-xdebug.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
