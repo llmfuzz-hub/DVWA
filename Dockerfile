@@ -38,6 +38,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY --chown=www-data:www-data . .
 COPY --chown=www-data:www-data config/config.inc.php.dist config/config.inc.php
 
+# Install mysql client for database health checks
+RUN apt-get update \
+ && export DEBIAN_FRONTEND=noninteractive \
+ && apt-get install -y default-mysql-client \
+ && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["apache2-foreground"]
+
 # This is configuring the stuff for the API
 RUN cd /var/www/html/vulnerabilities/api \
- && composer install \
+ && composer install
